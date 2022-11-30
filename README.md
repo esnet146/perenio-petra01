@@ -26,7 +26,7 @@ substitutions:
 esphome:
   name: $board_name
   platform: ESP8266
-  board: esp01_1m
+  board: esp_wroom_02
 
 wifi:
 
