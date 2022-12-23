@@ -1,0 +1,161 @@
+remote_receiver:
+  pin:
+    number: GPIO05
+    inverted: true
+  dump: all
+  on_lg:
+    then:
+      - lambda: |-
+          ESP_LOGD("main", "Remote Code Hex %s", format_hex(x.data).c_str());
+      - http_request.get: !lambda |- 
+                            uint32_t test = x.data;
+                            std::string cmd;
+                            switch (test)
+                            {
+                            case 0x00FFB04F:
+                              ESP_LOGD("main", "pg+ Programm+");
+                              cmd = "FX=~";
+                              break;
+                            case 0x00FF8877:
+                              ESP_LOGD("main", "pg- Programm-");
+                              cmd = "FX=~-";
+                              break;
+                            case 0x00FFB24D:
+                              ESP_LOGD("main", "epg speed +16");
+                              cmd = "SX=~16";
+                              break;
+                            case 0x00FF8A75:
+                              ESP_LOGD("main", "audio speed -16");
+                              cmd = "SX=~-16";
+                              break;
+                            case 0x00FF58A7:
+                              ESP_LOGD("main", "Ok Speed 128 Bright 128 Intensity 128");
+                              cmd = "FP=5&SX=128&A=128&IX=128";
+                              break;
+                            case 0x00FF5AA5:
+                              ESP_LOGD("main", "vol- Bright-16");
+                              cmd = "A=~-16";
+                              break;
+                            case 0x00FFD827:
+                              ESP_LOGD("main", "vol+ Bright+16");
+                              cmd = "A=~16";
+                              break;
+                            case 0x00FF609F:
+                              ESP_LOGD("main", "ch+ Effect+");
+                              cmd = "IX=~16";
+                              break;
+                            case 0x00FF6897:
+                              ESP_LOGD("main", "ch- Effect-");
+                              cmd = "IX=~-16";
+                              break;
+                            case 0x00FF42BD:
+                              ESP_LOGD("main", "red");
+                              cmd = "FP=8&CL=hFF0000&C2=hFF7F00&C3=hCC3D60";
+                              break;
+                            case 0x00FF02FD:
+                              ESP_LOGD("main", "Green");
+                              cmd = "FP=10&CL=h8000&C2=h8040&C3=h30661E";
+                              break;
+                            case 0x00FF00FF:
+                              ESP_LOGD("main", "Yellow White");
+                              cmd = "FP=5&CL=hFFFFFF&C2=hFFFFFF&C3=hCCCCCC";
+                              break;
+                            case 0x00FFC03F:
+                              ESP_LOGD("main", "Blue");
+                              cmd = "FP=15&CL=hFF&C2=h7F00FF&C3=h3D60CC";
+                              break;
+                            case 0x00FF629D:
+                              ESP_LOGD("main", "< red-");
+                              cmd = "R=~-16";
+                              break;
+                            case 0x00FF22DD:
+                              ESP_LOGD("main", "|| Green-");
+                              cmd = "G=~-16";
+                              break;
+                            case 0x00FF20DF:
+                              ESP_LOGD("main", "stop Yellow White-");
+                              cmd = "W=~-16";
+                              break;
+                            case 0x00FFE01F:
+                              ESP_LOGD("main", "rec Blue-");
+                              cmd = "B=~-16";
+                              break;
+                            case 0x00FF52AD:
+                              ESP_LOGD("main", "<< red+");
+                              cmd = "R=~16";
+                              break;
+                            case 0x00FF12ED:
+                              ESP_LOGD("main", ">> Green+");
+                              cmd = "G=~16";
+                              break;
+                            case 0x00FF10EF:
+                              ESP_LOGD("main", "|<< Yellow White+");
+                              cmd = "W=~16";
+                              break;
+                            case 0x00FFD02F:
+                              ESP_LOGD("main", ">>| Blue+");
+                              cmd = "B=~16";
+                              break;
+                            case 0x00FF1AE5:
+                              ESP_LOGD("main", "sub Perset-");
+                              cmd = "FP=~-";
+                              break;
+                            case 0x00FF18E7:
+                              ESP_LOGD("main", "ttx Perset+");
+                              cmd = "FP=~";
+                              break;
+                            case 0x00FF4AB5:
+                              ESP_LOGD("main", "1 Pink");
+                              cmd = "FP=38&CL=hFFC0CB&C2=hFFD4C0&C3=hCCA8B7";
+                              break;
+                            case 0x00FF0AF5:
+                              ESP_LOGD("main", "2 Orange");
+                              cmd = "FP=47&CL=hFFA500&C2=hD9FF00&C3=hCC753D";
+                              break;
+                            case 0x00FF08F7:
+                              ESP_LOGD("main", "3 Tomato");
+                              cmd = "FP=5&CL=hFF6347&C2=hFFBF47&C3=hCC646F";
+                              break;
+                            case 0x00FF6A95:
+                              ESP_LOGD("main", "4 LightYellow");
+                              cmd = "FP=5&CL=hFFFFE0&C2=hEFFFE0&C3=hCCC7BA";
+                              break;
+                            case 0x00FF2AD5:
+                              ESP_LOGD("main", "5 Yellow");
+                              cmd = "FP=17&CL=hFFFF00&C2=h7FFF00&C3=hCCA83D";
+                              break;
+                            case 0x00FF28D7:
+                              ESP_LOGD("main", "6 LightGreen");
+                              cmd = "FP=14&CL=h90EE90&C2=h90EEBF&C3=h96BE89";
+                              break;
+                            case 0x00FF728D:
+                              ESP_LOGD("main", "7 Moccasin");
+                              cmd = "FP=5&CL=hFFE4B5&C2=hF5FFB4&C3=hCCB2A2";
+                              break;
+                            case 0x00FF32CD:
+                              ESP_LOGD("main", "8 SkyBlue");
+                              cmd = "FP=15&CL=h87CEEB&C2=h879CEB&C3=h84B9BC";
+                              break;
+                            case 0x00FF30CF:
+                              ESP_LOGD("main", "9 GhostWhite");
+                              cmd = "FP=5&CL=hF8F8FF&C2=hFBF8FF&C3=hC8C9CC";
+                              break;
+                            case 0x00FFF00F:
+                              ESP_LOGD("main", "0 hult");
+                              cmd = "FP=28";
+                              break;
+                            case 0x00FFA05F:
+                              ESP_LOGD("main", "exit");
+                              cmd = "FX=1&SX=0&FP=5&CL=hFFFFFF&C2=hFFFFFF&C3=hFFFFFF";
+                              break;
+                            case 0x00FFAA55:
+                              ESP_LOGD("main", "Fav Reverse on");
+                              cmd = "RV=1";
+                              break;
+                            case 0x00FFA857:
+                              ESP_LOGD("main", "Fav Reverse_off");
+                              cmd = "RV=0";
+                              break;
+                             // to be continued...
+                            }
+                            return "http://lenta02.local/win&" + cmd ;
